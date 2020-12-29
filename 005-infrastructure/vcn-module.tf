@@ -6,9 +6,9 @@ module "vcn"{
 
   # Required
   compartment_id = oci_identity_compartment.tf-compartment.id
-  region = "eu-zurich-1"
-  vcn_name = "vcn-tf-2"
-  vcn_dns_label = "vcntf2"
+  region = var.vcn_region
+  vcn_name = var.vcn_vcn_name
+  vcn_dns_label = var.vcn_vcn_dns_label
 
   # Optional
   internet_gateway_enabled = true
