@@ -1,0 +1,4 @@
+[ocitf]
+server01 ansible_host=140.238.211.231
+server01 ansible_user=opc
+server01 ansible_ssh_private_key_file=/home/oci/.oci/terraform_deployments_29122020.pem
