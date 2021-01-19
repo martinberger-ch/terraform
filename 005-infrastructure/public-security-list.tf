@@ -5,7 +5,7 @@ resource "oci_core_security_list" "public-security-list"{
   vcn_id = module.vcn.vcn_id
 
 # Optional
-  display_name = "security-list-for-public-subnet"
+  display_name = "sl-public-01"
 
   egress_security_rules {
       stateless = false
@@ -51,4 +51,54 @@ ingress_security_rules {
         type = 3
       } 
   }
+
+ingress_security_rules { 
+      stateless = false
+      source = "0.0.0.0/0"
+      source_type = "CIDR_BLOCK"
+      # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml TCP is 6
+      protocol = "6"
+      tcp_options { 
+          min = 943
+          max = 943
+      }
+    }
+
+ingress_security_rules { 
+      stateless = false
+      source = "0.0.0.0/0"
+      source_type = "CIDR_BLOCK"
+      # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml TCP is 6
+      protocol = "6"
+      tcp_options { 
+          min = 945
+          max = 945
+      }
+    }
+
+ingress_security_rules { 
+      stateless = false
+      source = "0.0.0.0/0"
+      source_type = "CIDR_BLOCK"
+      # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml TCP is 6
+      protocol = "6"
+      tcp_options { 
+          min = 443
+          max = 443
+      }
+    }
+
+
+ingress_security_rules { 
+      stateless = false
+      source = "0.0.0.0/0"
+      source_type = "CIDR_BLOCK"
+      # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml TCP is 6
+      protocol = "17"
+      udp_options { 
+          min = 1194
+          max = 1194
+      }
+    }
+
 }

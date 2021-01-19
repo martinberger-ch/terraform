@@ -11,8 +11,5 @@ module "vcn"{
   vcn_dns_label = var.vcn_vcn_dns_label
 
   # Optional
-  internet_gateway_enabled = true
-  nat_gateway_enabled = true
-  service_gateway_enabled = true
-  vcn_cidr = "10.0.0.0/16"
+  vcn_cidr = var.vcn_cidr
 }

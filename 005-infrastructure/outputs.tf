@@ -11,10 +11,20 @@ output "compartment-OCID" {
   value = oci_identity_compartment.tf-compartment.id
 }
 
-# Outputs for compute instance
-output "public-ip-for-compute-instance" {
-  value = oci_core_instance.ol8_instance.public_ip
-}
+# # Outputs for compute instance
+# output "public-ip-for-compute-instance-01" {
+#   value = oci_core_instance.ol8-instance-01.public_ip
+# }
+
+# # Outputs for compute instance
+# output "private-ip-for-compute-instance-01" {
+#   value = oci_core_instance.ol8-instance-01.private_ip
+# }
+
+
+# output "private-ip-for-compute-instance-02" {
+#   value = oci_core_instance.ol8-instance-02.private_ip
+# }
 
 # Outputs for the vcn module
 output "vcn_id" {
@@ -73,3 +83,6 @@ output "dhcp-options-name" {
 output "dhcp-options-OCID" {
   value = oci_core_dhcp_options.dhcp-options.id
 }
+
+
+
