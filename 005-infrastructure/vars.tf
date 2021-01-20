@@ -33,6 +33,12 @@ variable "compartment_description" {
 variable "compartment_master_ocid" {
     default = "ocid1.compartment.oc1..aaaaaaaat5uo2xh77edws4huwvqorengp7x4xdv6x3giw3vryk36vyydwsdq"
 }
+
+
+variable "tenancy_ocid" {
+    default = "ocid1.tenancy.oc1..aaaaaaaaxuk4je4t3aorovuzmwyeaq5sftqv3nkyz64snijtdkitadbqqxmq"
+}
+
 # ocid1.compartment.oc1..aaaaaaaat5uo2xh77edws4huwvqorengp7x4xdv6x3giw3vryk36vyydwsdq = Compartment Mohnweg
 
 

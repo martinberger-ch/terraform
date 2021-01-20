@@ -46,86 +46,129 @@
 # }
 
 
-data "oci_core_app_catalog_listings" "test_app_catalog_listings" {
-  /*filter {
-    name   = "publisher_name"
-    values = ["OpenVPN Access Server"]
-  }*/
+variable "mp_listing_id" {
+  default = "ocid1.appcataloglisting.oc1..aaaaaaaafbgwdxg5j6jnyfhbcxvd62iabcraaf6bwu2u2nhrddztrrle66lq"
 }
 
-data "oci_core_app_catalog_listing_resource_versions" "test_app_catalog_listing_resource_versions" {
-  #Required
-  listing_id = data.oci_core_app_catalog_listings.test_app_catalog_listings.app_catalog_listings[0]["listing_id"]
+variable "mp_listing_resource_id" {
+  default = "ocid1.image.oc1..aaaaaaaa4ozqggnywlp3e3wzvu5x3aoohkt6cwm2pumgpn2tlzroj756azma"
 }
 
-resource "oci_core_app_catalog_listing_resource_version_agreement" "test_app_catalog_listing_resource_version_agreement" {
-  #Required
-  listing_id               = data.oci_core_app_catalog_listing_resource_versions.test_app_catalog_listing_resource_versions.app_catalog_listing_resource_versions[0]["listing_id"]
-  listing_resource_version = data.oci_core_app_catalog_listing_resource_versions.test_app_catalog_listing_resource_versions.app_catalog_listing_resource_versions[0]["listing_resource_version"]
+variable "mp_listing_resource_version" {
+  default = "AS_2.8.3"
 }
 
-resource "oci_core_app_catalog_subscription" "test_app_catalog_subscription" {
+variable "password" {
+  default = "4703@Kestenholz"
+}
+
+variable "admin_username" {
+  default = "openvpnadmin"
+}
+
+
+variable "as_activation_key" {
+  description = "Activation key is needed to handle more than 2 VPN connections"
+  default     = ""
+}
+
+
+# Marketplace subscription
+# Local variables pointing to the Marketplace catalog resource
+# Eg. Modify accordingly to your Application/Listing
+locals {
+  mp_listing_id               = var.mp_listing_id
+  mp_listing_resource_id      = var.mp_listing_resource_id
+  mp_listing_resource_version = var.mp_listing_resource_version
+}
+
+
+# Get Image Agreement
+resource "oci_core_app_catalog_listing_resource_version_agreement" "mp_image_agreement" {
+  #  count = var.use_marketplace_image ? 1 : 0
+
+  listing_id               = local.mp_listing_id
+  listing_resource_version = local.mp_listing_resource_version
+}
+
+# Accept Terms and Subscribe to the image, placing the image in a particular compartment
+resource "oci_core_app_catalog_subscription" "mp_image_subscription" {
+  #  count                    = var.use_marketplace_image ? 1 : 0
   compartment_id           = oci_identity_compartment.tf-compartment.id
-  eula_link                = oci_core_app_catalog_listing_resource_version_agreement.test_app_catalog_listing_resource_version_agreement.eula_link
-  listing_id               = oci_core_app_catalog_listing_resource_version_agreement.test_app_catalog_listing_resource_version_agreement.listing_id
-  listing_resource_version = oci_core_app_catalog_listing_resource_version_agreement.test_app_catalog_listing_resource_version_agreement.listing_resource_version
-  oracle_terms_of_use_link = oci_core_app_catalog_listing_resource_version_agreement.test_app_catalog_listing_resource_version_agreement.oracle_terms_of_use_link
-  signature                = oci_core_app_catalog_listing_resource_version_agreement.test_app_catalog_listing_resource_version_agreement.signature
-  time_retrieved           = oci_core_app_catalog_listing_resource_version_agreement.test_app_catalog_listing_resource_version_agreement.time_retrieved
+  eula_link                = oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement.eula_link
+  listing_id               = oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement.listing_id
+  listing_resource_version = oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement.listing_resource_version
+  oracle_terms_of_use_link = oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement.oracle_terms_of_use_link
+  signature                = oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement.signature
+  time_retrieved           = oci_core_app_catalog_listing_resource_version_agreement.mp_image_agreement.time_retrieved
 
   timeouts {
     create = "20m"
   }
 }
 
+# Gets the partner image subscription
+data "oci_core_app_catalog_subscriptions" "mp_image_subscription" {
+  #Required
+  compartment_id = oci_identity_compartment.tf-compartment.id
 
-# bootstrap data source
-data "template_file" "bootstrap" {
-template = base64encode(file("./userdata/bootstrap.tpl"))
+  #Optional
+  #  listing_id = local.mp_listing_id
 
-  vars = {
-    password          = "EE1a2qfRs0FR"
-    as_activation_key = ""
-    admin_username    = "openvpnadmin"
+  filter {
+    name   = "listing_resource_version"
+    values = [local.mp_listing_resource_version]
   }
 }
 
+# bootstrap data source
+data "template_file" "bootstrap" {
+  template = file("./userdata/bootstrap.tpl")
 
-resource "oci_core_instance" "as_instance" {
-  availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
-  compartment_id      = oci_identity_compartment.tf-compartment.id
-  display_name        = "OpenVPN Access Server"
-  shape               = var.compute_shape
-
-  availability_config {
-	recovery_action = "RESTORE_INSTANCE"
-	}
-
-  create_vnic_details {
-    subnet_id        = oci_core_subnet.vcn-public-subnet.id
+  vars = {
+    password          = var.password
+    as_activation_key = var.as_activation_key
+    admin_username    = var.admin_username
   }
+}
+
+data "oci_identity_availability_domain" "ad" {
+  compartment_id = var.tenancy_ocid
+  ad_number      = 1
+}
+# Creates an instance (without assigning a public IP to the primary private IP on the VNIC)
+resource "oci_core_instance" "as_instance" {
+  availability_domain = data.oci_identity_availability_domain.ad.name
+  compartment_id      =  oci_identity_compartment.tf-compartment.id
+  display_name        = "OpenVPN"
+  shape               = var.compute_shape
 
   source_details {
     source_type = "image"
-    source_id   = data.oci_core_app_catalog_subscriptions.test_app_catalog_subscriptions.app_catalog_subscriptions[0]["listing_resource_id"]
+    source_id   = local.mp_listing_resource_id
+  }
+
+  create_vnic_details {
+    assign_public_ip       = false
+    display_name           = "asPrimaryVnic"
+    subnet_id = oci_core_subnet.vcn-public-subnet.id
+    skip_source_dest_check = true
   }
 
   metadata = {
     ssh_authorized_keys = file(var.compute_ssh_authorized_keys)
     user_data           = base64encode(data.template_file.bootstrap.rendered)
-
-
   }
-
   timeouts {
     create = "60m"
   }
 }
 
+
 # Gets a list of VNIC attachments on the instance
 data "oci_core_vnic_attachments" "instance_vnics" {
-  availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
   compartment_id      = oci_identity_compartment.tf-compartment.id
+  availability_domain = data.oci_identity_availability_domain.ad.name
   instance_id         = oci_core_instance.as_instance.id
 }
 
@@ -146,32 +189,24 @@ data "oci_core_private_ips" "private_ips1" {
 
 
 resource "oci_core_public_ip" "reserved_public_ip_assigned" {
-  compartment_id      = oci_identity_compartment.tf-compartment.id
+  compartment_id = oci_identity_compartment.tf-compartment.id
   display_name   = "asPublicIPAssigned"
   lifetime       = "RESERVED"
   private_ip_id  = lookup(data.oci_core_private_ips.private_ips1.private_ips[0], "id")
 }
 
+# output variables
 
 
 output "instance_public_url" {
-  value = format("https://%s/admin", "oci_core_public_ip.reserved_public_ip_assigned.ip_address")
+  value = format("https://%s/admin", oci_core_public_ip.reserved_public_ip_assigned.ip_address)
 }
 
-
-data "oci_core_app_catalog_subscriptions" "test_app_catalog_subscriptions" {
-  #Required
-  compartment_id = oci_identity_compartment.tf-compartment.id
-
-  #Optional
-  listing_id = oci_core_app_catalog_subscription.test_app_catalog_subscription.listing_id
-
-  filter {
-    name   = "listing_resource_version"
-    values = [oci_core_app_catalog_subscription.test_app_catalog_subscription.listing_resource_version]
-  }
+output "admin_password" {
+  value = var.password
 }
 
-output "subscriptions" {
-  value = [data.oci_core_app_catalog_subscriptions.test_app_catalog_subscriptions.app_catalog_subscriptions]
+output "admin_username" {
+  value = var.admin_username
 }
+
