@@ -1,3 +1,7 @@
+000-setup
+001-compartment
+002-vcn
+003-instance
 005-infrastructure/ftp-sync.json
 005-infrastructure/.push.settings.jsonc
 005-infrastructure/backend.tf
