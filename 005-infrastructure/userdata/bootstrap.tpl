@@ -17,3 +17,7 @@ while ! [ "True" = "$(/usr/local/openvpn_as/scripts/sacli LocalAuthEnabled)" ]; 
 /usr/local/openvpn_as/scripts/sacli start
 # activate AS with key
 # /usr/local/openvpn_as/scripts/sacli --lic_key "${as_activation_key}" LicActivate
+# Set route rule to private network
+/usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.0" --value "10.1.0.0/27" ConfigDel
+/usr/local/openvpn_as/scripts/sacli --key "vpn.server.routing.private_network.0" --value "10.1.0.32/27" ConfigPut
+/usr/local/openvpn_as/scripts/sacli start

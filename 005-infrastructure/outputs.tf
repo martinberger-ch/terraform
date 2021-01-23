@@ -1,50 +1,54 @@
-# Output the "list" of all availability domains.
-output "all-availability-domains-in-your-tenancy" {
-  value = data.oci_identity_availability_domains.ads.availability_domains
-}
+# - Output Compartment Information -------------------------------------------
+# - Compartment Name
+# - Compartment Id
+# - List of Availability Domains
+# ---------------------------------------------------------------------------- 
 
-# Outputs for compartment
+# Compartment Name
 output "compartment-name" {
   value = oci_identity_compartment.tf-compartment.name
 }
+
+# Compartment Id
 output "compartment-OCID" {
   value = oci_identity_compartment.tf-compartment.id
 }
 
-# # Outputs for compute instance
-# output "public-ip-for-compute-instance-01" {
-#   value = oci_core_instance.ol8-instance-01.public_ip
-# }
+# List of Availability Domains
+output "all-availability-domains-in-your-tenancy" {
+  value = data.oci_identity_availability_domains.ads.availability_domains
+}
 
-# # Outputs for compute instance
-# output "private-ip-for-compute-instance-01" {
-#   value = oci_core_instance.ol8-instance-01.private_ip
-# }
+# - Output Compute Instances -------------------------------------------------
+# - Public IP instance 01
+# - Compartment Id
+# - List of Availability Domains
+# ---------------------------------------------------------------------------- 
+
+# Public IP instance 01
+output "public-ip-for-compute-instance-01" {
+  value = oci_core_instance.ol8-instance-01.public_ip
+}
+
+# Private IP instance 01
+output "private-ip-for-compute-instance-01" {
+  value = oci_core_instance.ol8-instance-01.private_ip
+}
 
 
-# output "private-ip-for-compute-instance-02" {
-#   value = oci_core_instance.ol8-instance-02.private_ip
-# }
+# - Output Network Information -----------------------------------------------
+# - VCN OCID
+# - Security Lists
+# - Subnets
+# ---------------------------------------------------------------------------- 
 
-# Outputs for the vcn module
+# VCN OCID
 output "vcn_id" {
   description = "OCID of the VCN that is created"
   value = module.vcn.vcn_id
 }
-output "id-for-route-table-that-includes-the-internet-gateway" {
-  description = "OCID of the internet-route table. This route table has an internet gateway to be used for public subnets"
-  value = module.vcn.ig_route_id
-}
-output "nat-gateway-id" {
-  description = "OCID for NAT gateway"
-  value = module.vcn.nat_gateway_id
-}
-output "id-for-for-route-table-that-includes-the-nat-gateway" {
-  description = "OCID of the nat-route table - This route table has a nat gateway to be used for private subnets. This route table also has a service gateway."
-  value = module.vcn.nat_route_id
-}
 
-# Outputs for private security list
+# Private security list
 output "private-security-list-name" {
   value = oci_core_security_list.private-security-list.display_name
 }
@@ -52,7 +56,7 @@ output "private-security-list-OCID" {
   value = oci_core_security_list.private-security-list.id
 }
 
-# Outputs for public security list
+# Public security list
 output "public-security-list-name" {
   value = oci_core_security_list.public-security-list.display_name
 }
@@ -60,7 +64,7 @@ output "public-security-list-OCID" {
   value = oci_core_security_list.public-security-list.id
 }
 
-# Outputs for private subnet
+# Private subnet
 output "private-subnet-name" {
   value = oci_core_subnet.vcn-private-subnet.display_name
 }
@@ -68,7 +72,7 @@ output "private-subnet-OCID" {
   value = oci_core_subnet.vcn-private-subnet.id
 }
 
-# Outputs for public subnet
+# Public subnet
 output "public-subnet-name" {
   value = oci_core_subnet.vcn-public-subnet.display_name
 }
@@ -76,7 +80,7 @@ output "public-subnet-OCID" {
   value = oci_core_subnet.vcn-public-subnet.id
 }
 
-# Outputs for DHCP Options
+# DHCP Options
 output "dhcp-options-name" {
   value = oci_core_dhcp_options.dhcp-options.display_name
 }
@@ -84,4 +88,23 @@ output "dhcp-options-OCID" {
   value = oci_core_dhcp_options.dhcp-options.id
 }
 
+# - Output OpenVPN ----------- -----------------------------------------------
+# - URL
+# - Admin Username
+# - Admin Password
+# ---------------------------------------------------------------------------- 
 
+# URL
+output "instance_public_url" {
+  value = format("https://%s/admin", oci_core_public_ip.reserved_public_ip_assigned.ip_address)
+}
+
+# Admin Username
+output "admin_password" {
+  value = var.password
+}
+
+# Admin Password
+output "admin_username" {
+  value = var.admin_username
+}

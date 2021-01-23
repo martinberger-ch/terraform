@@ -1,87 +1,42 @@
+# - Compute Instances --------------------------------------------------------
+# - ol8-instance-01 - Public Subnet
+# - ol8-instance-02 - Private Subnet
+# - OpenVPN Instance by OCI Marketplace
+# ---------------------------------------------------------------------------- 
 
-# resource "oci_core_instance" "ol8-instance-01" {
-#     # Required
-#     availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
-#     compartment_id = oci_identity_compartment.tf-compartment.id
-#     shape = var.compute_shape
-#     source_details {
-#         source_id = var.compute_source_id
-#         source_type = "image"
-#     }
+# ol8-instance-01 - Private Subnet
+resource "oci_core_instance" "ol8-instance-01" {
+    # Required
+    availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
+    compartment_id = oci_identity_compartment.tf-compartment.id
+    shape = var.compute_shape
+    source_details {
+        source_id = var.compute_source_id
+        source_type = "image"
+    }
 
-#     # Optional
-#     display_name = var.compute_display_name-01
-#     create_vnic_details {
-#         assign_public_ip = true
-#         subnet_id = oci_core_subnet.vcn-public-subnet.id
-#     }
-#     metadata = {
-#         ssh_authorized_keys = file(var.compute_ssh_authorized_keys)
-#     } 
-#     preserve_boot_volume = false
-# }
+    # Optional
+    display_name = var.compute_display_name-01
+    create_vnic_details {
+        assign_public_ip = false
+        subnet_id = oci_core_subnet.vcn-private-subnet.id
+    }
+    metadata = {
+        ssh_authorized_keys = file(var.compute_ssh_authorized_keys)
+    } 
+    preserve_boot_volume = false
 
-
-# resource "oci_core_instance" "ol8-instance-02" {
-#     # Required
-#     availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
-#     compartment_id = oci_identity_compartment.tf-compartment.id
-#     shape = var.compute_shape
-#     source_details {
-#         source_id = var.compute_source_id
-#         source_type = "image"
-#     }
-
-#     # Optional
-#     display_name = var.compute_display_name-02
-#     create_vnic_details {
-#         assign_public_ip = false
-#         subnet_id = oci_core_subnet.vcn-private-subnet.id
-#     }
-#     metadata = {
-#         ssh_authorized_keys = file(var.compute_ssh_authorized_keys)
-#     } 
-#     preserve_boot_volume = false
-
-# }
-
-
-variable "mp_listing_id" {
-  default = "ocid1.appcataloglisting.oc1..aaaaaaaafbgwdxg5j6jnyfhbcxvd62iabcraaf6bwu2u2nhrddztrrle66lq"
 }
 
-variable "mp_listing_resource_id" {
-  default = "ocid1.image.oc1..aaaaaaaa4ozqggnywlp3e3wzvu5x3aoohkt6cwm2pumgpn2tlzroj756azma"
-}
-
-variable "mp_listing_resource_version" {
-  default = "AS_2.8.3"
-}
-
-variable "password" {
-  default = "4703@Kestenholz"
-}
-
-variable "admin_username" {
-  default = "openvpnadmin"
-}
+# OpenVPN Instance by OCI Marketplace
 
 
-variable "as_activation_key" {
-  description = "Activation key is needed to handle more than 2 VPN connections"
-  default     = ""
-}
-
-
-# Marketplace subscription
-# Local variables pointing to the Marketplace catalog resource
-# Eg. Modify accordingly to your Application/Listing
+# Marketplace subscription - Local variables pointing to the Marketplace catalog resource
 locals {
   mp_listing_id               = var.mp_listing_id
   mp_listing_resource_id      = var.mp_listing_resource_id
   mp_listing_resource_version = var.mp_listing_resource_version
 }
-
 
 # Get Image Agreement
 resource "oci_core_app_catalog_listing_resource_version_agreement" "mp_image_agreement" {
@@ -132,10 +87,12 @@ data "template_file" "bootstrap" {
   }
 }
 
+# define AD
 data "oci_identity_availability_domain" "ad" {
   compartment_id = var.tenancy_ocid
   ad_number      = 1
 }
+
 # Creates an instance (without assigning a public IP to the primary private IP on the VNIC)
 resource "oci_core_instance" "as_instance" {
   availability_domain = data.oci_identity_availability_domain.ad.name
@@ -184,10 +141,7 @@ data "oci_core_private_ips" "private_ips1" {
 }
 
 
-
 # Create 1 reserved public IP and associate with private ip:
-
-
 resource "oci_core_public_ip" "reserved_public_ip_assigned" {
   compartment_id = oci_identity_compartment.tf-compartment.id
   display_name   = "asPublicIPAssigned"
@@ -195,18 +149,4 @@ resource "oci_core_public_ip" "reserved_public_ip_assigned" {
   private_ip_id  = lookup(data.oci_core_private_ips.private_ips1.private_ips[0], "id")
 }
 
-# output variables
-
-
-output "instance_public_url" {
-  value = format("https://%s/admin", oci_core_public_ip.reserved_public_ip_assigned.ip_address)
-}
-
-output "admin_password" {
-  value = var.password
-}
-
-output "admin_username" {
-  value = var.admin_username
-}
 
