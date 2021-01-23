@@ -15,3 +15,8 @@ Required variables according you Oracle Cloud Infrastructure environment.
 | compute_display_name-01      | Display Name for the private VM     |
 | compute_ssh_authorized_keys  | Path and filename of public SSH key |
 | vcn_region                   | Region were VCN is created          |
+
+
+# OpenVPN URL
+ * https://152.67.80.85/?=connect
+ * https://152.67.80.85/admin
