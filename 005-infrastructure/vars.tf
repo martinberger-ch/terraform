@@ -28,7 +28,11 @@ variable "compute_source_id" {
 }
 
 variable "compute_display_name-01" {
-        default="Compute Instance Private"
+        default="Application Server - Private Subnet"
+}
+
+variable "openvpnas_display_name" {
+        default="OpenVPN Access Server - Private Subnet"
 }
 
 

@@ -97,7 +97,7 @@ data "oci_identity_availability_domain" "ad" {
 resource "oci_core_instance" "as_instance" {
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      =  oci_identity_compartment.tf-compartment.id
-  display_name        = "OpenVPN"
+  display_name        = var.openvpnas_display_name
   shape               = var.compute_shape
 
   source_details {
