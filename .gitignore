@@ -2,3 +2,6 @@
 backend.tf
 provider.tf
 /000-setup
+/001-compartment
+/002-vcn
+/003-instance
