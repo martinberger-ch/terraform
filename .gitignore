@@ -1,5 +1,4 @@
 # Local .terraform directories
 backend.tf
 provider.tf
-ftp-sync.json
-.push.settings.jsonc
+/000-setup
