@@ -1,6 +1,7 @@
 # Local .terraform directories
 backend.tf
 provider.tf
+.push.settings.jsonc
 /000-setup
 /001-compartment
 /002-vcn
