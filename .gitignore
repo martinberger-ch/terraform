@@ -5,3 +5,4 @@ provider.tf
 /001-compartment
 /002-vcn
 /003-instance
+/.vscode
