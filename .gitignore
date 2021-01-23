@@ -1,2 +1,4 @@
-ftp-sync.json
-.push.settings.jsonc
+005-infrastructure/ftp-sync.json
+005-infrastructure/.push.settings.jsonc
+005-infrastructure/backend.tf
+005-infrastructure/provider.tf
