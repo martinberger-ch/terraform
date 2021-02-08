@@ -1,3 +1,36 @@
+#
+# Create NAT Gateway
+#
+
+resource "oci_core_nat_gateway" "nat_gateway" {
+    #Required
+    compartment_id = oci_identity_compartment.tf-compartment.id
+    vcn_id = module.vcn.vcn_id
+
+    #Optional
+    display_name = var.nat_gateway_display_name
+}
+
+
+#
+# Create Internet Gateway
+#
+
+resource "oci_core_internet_gateway" "internet_gateway" {
+    #Required
+    compartment_id = oci_identity_compartment.tf-compartment.id
+    vcn_id = module.vcn.vcn_id
+
+    #Optional
+    display_name = var.internet_gateway_display_name
+}
+
+
+
+#
+# Create Service Gateway
+#
+
 data "oci_core_services" "all_oci_services" {
   filter {
     name   = "name"

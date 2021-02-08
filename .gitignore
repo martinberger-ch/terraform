@@ -7,3 +7,4 @@ provider.tf
 /002-vcn
 /003-instance
 /.vscode
+005-infrastructure/terraform.tfvars

@@ -101,10 +101,10 @@ output "instance_public_url" {
 
 # Admin Username
 output "admin_password" {
-  value = var.password
+  value = var.openvpn_admin_password
 }
 
 # Admin Password
 output "admin_username" {
-  value = var.admin_username
+  value = var.openvpn_admin_username
 }

@@ -12,7 +12,7 @@ This terraform collection is creating a public/private subnet setup and an OpenV
  * (optional) Database system
  * (optional) Management server
 
-# Variables in vars.tf file
+# Variables in terraform.tfvars file
 Required variables according you Oracle Cloud Infrastructure environment.
 
 | Variable                     | Value                               |

@@ -1,6 +1,5 @@
 # - Compute Instances --------------------------------------------------------
-# - ol8-instance-01 - Public Subnet
-# - ol8-instance-02 - Private Subnet
+# - ol8-instance-01 - Private Subnet
 # - OpenVPN Instance by OCI Marketplace
 # ---------------------------------------------------------------------------- 
 
@@ -81,9 +80,9 @@ data "template_file" "bootstrap" {
   template = file("./userdata/bootstrap.tpl")
 
   vars = {
-    password          = var.password
-    as_activation_key = var.as_activation_key
-    admin_username    = var.admin_username
+    password          = var.openvpn_admin_password
+    as_activation_key = var.openvpn_activation_key
+    admin_username    = var.openvpn_admin_username
   }
 }
 
