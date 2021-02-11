@@ -1,10 +1,24 @@
-# - Compute Instances --------------------------------------------------------
-# - ol8-instance-01 - Private Subnet
-# - OpenVPN Instance by OCI Marketplace
-# ---------------------------------------------------------------------------- 
+# ---------------------------------------------------------------------------
+# Trivadis AG, Infrastructure Managed Services
+# Saegereistrasse 29, 8152 Glattbrugg, Switzerland
+# ---------------------------------------------------------------------------
+# Name.......: compute.tf
+# Author.....: Martin Berger (mbg) martin.berger@trivadis.com
+# Editor.....: Martin Berger
+# Date.......: 2021.02.11
+# Revision...: 
+# Purpose....: Create compute instances.
+# Notes......: --
+# Reference..: --
+# License....: Apache License Version 2.0, January 2004 as shown
+#              at http://www.apache.org/licenses/
+# ---------------------------------------------------------------------------
 
-# ol8-instance-01 - Private Subnet
-resource "oci_core_instance" "ol8-instance-01" {
+
+# Create Application Server ----------------------------------------------------
+
+# Oracle Linux instance according image OCID
+resource "oci_core_instance" "compute_instance" {
     # Required
     availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
     compartment_id = oci_identity_compartment.tf-compartment.id
@@ -15,7 +29,7 @@ resource "oci_core_instance" "ol8-instance-01" {
     }
 
     # Optional
-    display_name = var.compute_display_name-01
+    display_name = var.compute_display_name
     create_vnic_details {
         assign_public_ip = false
         subnet_id = oci_core_subnet.vcn-private-subnet.id
@@ -27,17 +41,16 @@ resource "oci_core_instance" "ol8-instance-01" {
 
 }
 
-# OpenVPN Instance by OCI Marketplace
+# Create OpenVPN Access Server ----------------------------------------------------
 
-
-# Marketplace subscription - Local variables pointing to the Marketplace catalog resource
+# marketplace subscription - Local variables pointing to the Marketplace catalog resource
 locals {
   mp_listing_id               = var.mp_listing_id
   mp_listing_resource_id      = var.mp_listing_resource_id
   mp_listing_resource_version = var.mp_listing_resource_version
 }
 
-# Get Image Agreement
+# get image agreement
 resource "oci_core_app_catalog_listing_resource_version_agreement" "mp_image_agreement" {
   #  count = var.use_marketplace_image ? 1 : 0
 
@@ -45,7 +58,7 @@ resource "oci_core_app_catalog_listing_resource_version_agreement" "mp_image_agr
   listing_resource_version = local.mp_listing_resource_version
 }
 
-# Accept Terms and Subscribe to the image, placing the image in a particular compartment
+# accept terms and subscribe to the image, placing the image in a particular compartment
 resource "oci_core_app_catalog_subscription" "mp_image_subscription" {
   #  count                    = var.use_marketplace_image ? 1 : 0
   compartment_id           = oci_identity_compartment.tf-compartment.id
@@ -61,13 +74,13 @@ resource "oci_core_app_catalog_subscription" "mp_image_subscription" {
   }
 }
 
-# Gets the partner image subscription
+# gets the partner image subscription
 data "oci_core_app_catalog_subscriptions" "mp_image_subscription" {
   #Required
   compartment_id = oci_identity_compartment.tf-compartment.id
 
   #Optional
-  #  listing_id = local.mp_listing_id
+  listing_id = local.mp_listing_id
 
   filter {
     name   = "listing_resource_version"
@@ -86,17 +99,17 @@ data "template_file" "bootstrap" {
   }
 }
 
-# define AD
+# define availability domain
 data "oci_identity_availability_domain" "ad" {
   compartment_id = var.tenancy_ocid
   ad_number      = 1
 }
 
-# Creates an instance (without assigning a public IP to the primary private IP on the VNIC)
+# creates an instance (without assigning a public IP to the primary private IP on the VNIC)
 resource "oci_core_instance" "as_instance" {
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      =  oci_identity_compartment.tf-compartment.id
-  display_name        = var.openvpnas_display_name
+  display_name        = var.openvpn_display_name
   shape               = var.compute_shape
 
   source_details {
@@ -121,26 +134,25 @@ resource "oci_core_instance" "as_instance" {
 }
 
 
-# Gets a list of VNIC attachments on the instance
+# gets a list of VNIC attachments on the instance
 data "oci_core_vnic_attachments" "instance_vnics" {
   compartment_id      = oci_identity_compartment.tf-compartment.id
   availability_domain = data.oci_identity_availability_domain.ad.name
   instance_id         = oci_core_instance.as_instance.id
 }
 
-# Gets the OCID of the first VNIC
+# gets the OCID of the first VNIC
 data "oci_core_vnic" "instance_vnic1" {
   vnic_id = lookup(data.oci_core_vnic_attachments.instance_vnics.vnic_attachments[0], "vnic_id")
 }
 
 
-# Gets a list of private IPs on the first VNIC
+# gets a list of private IPs on the first VNIC
 data "oci_core_private_ips" "private_ips1" {
   vnic_id = data.oci_core_vnic.instance_vnic1.id
 }
 
-
-# Create 1 reserved public IP and associate with private ip:
+# create 1 reserved public IP and associate with private ip:
 resource "oci_core_public_ip" "reserved_public_ip_assigned" {
   compartment_id = oci_identity_compartment.tf-compartment.id
   display_name   = "asPublicIPAssigned"
@@ -148,4 +160,4 @@ resource "oci_core_public_ip" "reserved_public_ip_assigned" {
   private_ip_id  = lookup(data.oci_core_private_ips.private_ips1.private_ips[0], "id")
 }
 
-
+# --- EOF -------------------------------------------------------------------
