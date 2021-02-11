@@ -81,13 +81,11 @@ $ terraform apply
 ```
 
 
-
 # OpenVPN URL
-To get the OVPN client configuration file
+The public IP address is part of the Terraform output. To get the OVPN client configuration file:
  * https://<your_openvpnas_public_ip_here>/?=connect
 
  Admin console
  * https://<your_openvpnas_public_ip_here>/admin
 
 
- # Optional
