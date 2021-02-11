@@ -15,22 +15,23 @@ This terraform collection is creating a public/private subnet setup and an OpenV
   * Oracle OCI CLI installed and configured 
   * Terraform up and running
   * Git client installed
+  * SSH public key for OCI instance setup available
 
 
 # Variables in terraform.tfvars file
 Required variables according your Oracle Cloud Infrastructure environment.
-| Variable                              | Value                               |
-|---------------------------------------|-------------------------------------|
-| TF_VAR_user_ocid                      | User OCID                           | 
-| TF_VAR_fingerprint                    | OCI API Fingerprint                 |
-| TF_VAR_key_file                       | OCI API SSH Key File                |
-| TF_VAR_tenancy_ocid                   | Tenancy OCID                        |
-| TF_region                             | OCI Region                          |
-| TF_VAR_compartment_name               | Compartment Name                    |
-| TF_VAR_compartment_description        | Compartment Description             |
-| TF_VAR_compartment_master_ocid        | Master Compartment OCID             |
-| TF_VAR_compute_ssh_authorized_keys    | SSH Key for Compute Instance Access |
-| TF_VAR_openvpn_admin_password         | OpenVPN inital login password       |
+| Variable                              | Value                                      |
+|---------------------------------------|--------------------------------------------|
+| TF_VAR_user_ocid                      | User OCID                                  | 
+| TF_VAR_fingerprint                    | OCI API Fingerprint                        |
+| TF_VAR_key_file                       | OCI API SSH Key File                       |
+| TF_VAR_tenancy_ocid                   | Tenancy OCID                               |
+| TF_region                             | OCI Region                                 |
+| TF_VAR_compartment_name               | Compartment Name                           |
+| TF_VAR_compartment_description        | Compartment Description                    |
+| TF_VAR_compartment_master_ocid        | Master Compartment OCID                    |
+| TF_VAR_compute_ssh_authorized_keys    | SSH Public Key for Compute Instance Access |
+| TF_VAR_openvpn_admin_password         | OpenVPN inital login password              |
 
 
 # Provisioning
