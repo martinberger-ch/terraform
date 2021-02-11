@@ -1,8 +1,4 @@
 # Local .terraform directories
 .push.settings.jsonc
-/000-setup
-/001-compartment
-/002-vcn
-/003-instance
-/.vscode
-005-infrastructure/terraform.tfvars
+.vscode
+terraform.tfvars
