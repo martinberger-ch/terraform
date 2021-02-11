@@ -1,14 +1,15 @@
 # OpenVPN Setup with Terraform
-This terraform collection is creating a public/private subnet setup and an OpenVPN server up and running. 
+This terraform collection is creating a public/private subnet setup and an OpenVPN server up and running. Part of the OpenVPN provisioning code is reverse engineered from the Oracle Cloud Infrastructure OCI Resource Manager stack.
 
 ![OCI Architecture Picture](image/oci_small_dev_architecture.jpg)  
 
 ## Components
- * Regional public and private subnet
+ * New compartment based on an existing compartment
+ * VCN with regional public and private subnet
  * Routing tables and security lists
  * Internet gateway, NAT gateway and service gateway
  * OpenVPN Access Server in Public Subnet- Free for 2 Connections
- * Oracle Linux Server in private Subnet
+ * Oracle Linux Server in private Subnet for further actions
 
  ## Prerequisites
   * Oracle OCI CLI installed and configured 
@@ -18,7 +19,6 @@ This terraform collection is creating a public/private subnet setup and an OpenV
 
 # Variables in terraform.tfvars file
 Required variables according your Oracle Cloud Infrastructure environment.
-
 | Variable                              | Value                               |
 |---------------------------------------|-------------------------------------|
 | TF_VAR_user_ocid                      | User OCID                           | 
@@ -33,19 +33,27 @@ Required variables according your Oracle Cloud Infrastructure environment.
 | TF_VAR_openvpn_admin_password         | OpenVPN inital login password       |
 
 
-# Deployment Steps
+# Provisioning
 
 ## 1. Git Clone
-blabla
+```bash
+$ git clone https://github.com/martinberger-ch/terraform.git
+```
+
 
 ## 2. Go to Directory
-cd oci_openvpnas
+```bash
+$ cd oci_openvpnas
+```
 
 ## 3. Set Variables
+
+Export Terraform variables with your settings.
+
 ```bash
 export TF_VAR_tenancy_ocid=<your_tenancy_ocid>
 export TF_VAR_user_ocid=<your_username_OCID>                              
-export TF_VAR_key_file=<your_ssh_private_key>   
+export TF_VAR_private_key_path=<your_ssh_private_key>   
 export TF_VAR_fingerprint=<your_public_key_fingerprint>
 export TF_VAR_region=<your_OCI_region>                           
 export TF_VAR_compartment_name=<your_compartment_name>

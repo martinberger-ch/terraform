@@ -27,6 +27,7 @@ is 0.14.3. You can update by downloading from https://www.terraform.io/downloads
 
 ## Directory oci-tf-openvpnas
 Terraform setup for OpenVPN Access Server and a compute instance.
+[README](oci-tf-openvpnas/readme.md)
 
 ## Directory oci-tf-ansible
 Ansible example playbook to use within Terraform.
