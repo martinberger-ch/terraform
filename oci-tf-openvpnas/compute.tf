@@ -24,7 +24,7 @@ resource "oci_core_instance" "compute_instance" {
     compartment_id = oci_identity_compartment.tf-compartment.id
     shape = var.compute_shape
     source_details {
-        source_id = var.compute_source_id
+        source_id = var.linux_image_ocid[var.region]
         source_type = "image"
     }
 
