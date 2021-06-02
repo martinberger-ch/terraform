@@ -42,6 +42,13 @@ variable "vcn_cidr" {
 }
 
 
+variable "service_gateway_enabled" {
+    description = "Service gateway enabled"
+    default     = true
+    type        = bool
+}
+
+
 # general oci parameters ----------------------------------------------------
 variable "compartment_id" {
   description = "OCID of the compartment"
