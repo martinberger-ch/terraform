@@ -43,7 +43,7 @@ variable "vcn_cidr" {
 
 
 # general oci parameters ----------------------------------------------------
-variable "compartment_ocid" {
+variable "compartment_id" {
   description = "OCID of the compartment"
   type        = string
 }
