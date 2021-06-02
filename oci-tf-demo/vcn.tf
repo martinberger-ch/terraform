@@ -6,7 +6,7 @@ module "vcn"{
   # insert the 4 required variables here
 
   # Required
-  compartment_id = var.compartment_id
+  compartment_id = compartment_id
   region = var.region
   vcn_name = var.vcn_name
   vcn_dns_label = var.vcn_dns_label
@@ -19,7 +19,7 @@ module "vcn"{
 resource "oci_core_subnet" "vcn-public-subnet"{
 
   # Required
-  compartment_id = compartment_id
+  compartment_id = var.compartment_id
   vcn_id = module.vcn.vcn_id
   cidr_block = var.vcn_public_cidr_block
  
@@ -34,7 +34,7 @@ resource "oci_core_subnet" "vcn-public-subnet"{
 resource "oci_core_subnet" "vcn-private-subnet"{
 
   # Required
-  compartment_id = compartment_id
+  compartment_id = var.compartment_id
   vcn_id = module.vcn.vcn_id
   cidr_block = var.vcn_private_cidr_block
  
@@ -49,7 +49,7 @@ resource "oci_core_subnet" "vcn-private-subnet"{
 # public route table ----------------------------------------------------------
 resource "oci_core_route_table" "public_route_table" {
   display_name   = var.public_route_table_display_name
-    compartment_id = compartment_id
+    compartment_id = var.compartment_id
     vcn_id = module.vcn.vcn_id
 
   route_rules {
@@ -62,7 +62,7 @@ resource "oci_core_route_table" "public_route_table" {
 # private route table ----------------------------------------------------------
 resource "oci_core_route_table" "private_route_table" {
   display_name   = var.private_route_table_display_name
-    compartment_id = compartment_id
+    compartment_id = var.compartment_id
     vcn_id = module.vcn.vcn_id
 
   route_rules {
@@ -77,7 +77,7 @@ resource "oci_core_route_table" "private_route_table" {
 resource "oci_core_security_list" "public-security-list"{
 
 # Required
-  compartment_id = compartment_id
+  compartment_id = var.compartment_id
   vcn_id = module.vcn.vcn_id
 
 # Optional
@@ -184,7 +184,7 @@ ingress_security_rules {
 resource "oci_core_security_list" "private-security-list"{
 
 # Required
-  compartment_id = compartment_id
+  compartment_id = var.compartment_id
   vcn_id = module.vcn.vcn_id
 
 # Optional
@@ -214,7 +214,7 @@ ingress_security_rules {
 # nat gateway ---------------------------------------------------------------
 resource "oci_core_nat_gateway" "nat_gateway" {
     #Required
-    compartment_id = compartment_id
+    compartment_id = var.compartment_id
     vcn_id = module.vcn.vcn_id
 
     #Optional
@@ -225,7 +225,7 @@ resource "oci_core_nat_gateway" "nat_gateway" {
 # internet gateway ------------------------------------------------------------
 resource "oci_core_internet_gateway" "internet_gateway" {
     #Required
-    compartment_id = compartment_id
+    compartment_id = var.compartment_id
     vcn_id = module.vcn.vcn_id
 
     #Optional
@@ -243,7 +243,7 @@ data "oci_core_services" "all_oci_services" {
 }
 
 resource "oci_core_service_gateway" "service_gateway" {
-    compartment_id = compartment_id
+    compartment_id = var.compartment_id
   display_name   = var.service_gateway_display_name
 
   services {
