@@ -96,3 +96,34 @@ variable "private_route_table_display_name" {
     type        = string
 }
 
+# compute instance parameters ----------------------------------------------------
+variable "compute_shape" {
+  description = "The shape of compute instance."
+  default     = "VM.Standard.E2.1"
+  type        = string
+}
+
+variable "linux_image_ocid" {
+  type = map
+
+  default = {
+    # See https://docs.us-phoenix-1.oraclecloud.com/images/
+    # Oracle-provided image "Oracle-Linux-7.8-2020.04.17-0"
+    eu-zurich-1     = "ocid1.image.oc1.eu-zurich-1.aaaaaaaa5ganyj57k2dqyik4m4btpuq23le3e7clh56rjhgz6fekvtoyazqa"
+    eu-frankfurt-1  = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaavz6p7tyrczcwd5uvq6x2wqkbwcrjjbuohbjomtzv32k5bq24rsha"
+    eu-amsterdam-1  = "ocid1.image.oc1.eu-amsterdam-1.aaaaaaaaie5km236l53ymcvpwufyb2srtc3hw2pa6astfjdafzlxxdv5nfsq"
+    us-ashburn-1    = "ocid1.image.oc1.iad.aaaaaaaahjkmmew2pjrcpylaf6zdddtom6xjnazwptervti35keqd4fdylca"
+  }
+}
+
+variable "compute_display_name" {
+  description = "Display name of host"
+  default     = "Test Server - Public Subnet"
+  type        = string
+}
+
+variable "compute_ssh_authorized_keys" {
+  description = "path to the ssh public key file"
+  default     = ""
+  type        = string
+}
