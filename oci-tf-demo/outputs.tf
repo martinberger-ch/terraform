@@ -3,6 +3,14 @@ output "vcn_id" {
   value = module.vcn.vcn_id
 }
 
-output "apachedevpubip_address" {
-  value = oci_core_public_ip.apachedevpubip.ip_address
-}
+output "public-ip-for-compute-instance" {
+  value = oci_core_instance.compute_instance.public_ip
+} 
+
+output "instance-name" {
+  value = oci_core_instance.compute_instance.display_name
+} 
+
+output "instance-state" {
+  value = oci_core_instance.compute_instance.state
+} 
