@@ -18,7 +18,7 @@ resource "oci_core_instance" "compute_instance" {
     # Optional
     display_name = var.compute_display_name
     create_vnic_details {
-        assign_public_ip = false
+        assign_public_ip = true
         subnet_id = oci_core_subnet.vcn-private-subnet.id
     }
     metadata = {
