@@ -43,6 +43,7 @@ variable "vcn_dns_label" {
 
 variable "vcn_cidr" {
   description = "VCN CIDR Range"
+  default     = "10.0.0.0/16"
   type        = string
 }
 
