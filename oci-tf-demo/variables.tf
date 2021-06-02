@@ -24,6 +24,11 @@ variable "region" {
   type        = string
 }
 
+# general oci parameters ----------------------------------------------------
+variable "compartment_id" {
+  description = "OCID of the compartment"
+  type        = string
+}
 
 # vcn parameters ----------------------------------------------------
 variable "vcn_name" {
@@ -87,12 +92,6 @@ variable "public_route_table_display_name" {
 variable "private_route_table_display_name" {
     description = "Display name of the private route table"
     default     = "rt-private-01"
-    type        = 
-
-# general oci parameters ----------------------------------------------------
-variable "compartment_id" {
-  description = "OCID of the compartment"
-  type        = string
+    type        = string
 }
-
 
