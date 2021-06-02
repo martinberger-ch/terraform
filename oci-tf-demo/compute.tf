@@ -31,7 +31,7 @@ resource "oci_core_instance" "compute_instance" {
  
 data "oci_core_private_ips" "pubiptestIps" {
 ip_address = oci_core_instance.pubiptest.private_ip
-subnet_id  = oci_core_subnet.pub.id
+subnet_id  = oci_core_subnet.vcn-public-subnet.id
 }
 
 resource "oci_core_public_ip" "pubip1" {
