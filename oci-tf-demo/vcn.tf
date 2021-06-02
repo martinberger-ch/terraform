@@ -1,9 +1,8 @@
 # vcn -----------------------------------------------------------------------
-module "vcn"{
+module "vcn" {
   source  = "oracle-terraform-modules/vcn/oci"
-  version = "1.0.3"
-  # Use the latest version, if there is one newer than "1.0.3"
-  # insert the 4 required variables here
+  version = "2.2.0"
+  # insert the 7 required variables here
 
   # Required
   compartment_id = var.compartment_id
