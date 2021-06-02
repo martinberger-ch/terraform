@@ -3,6 +3,6 @@ output "vcn_id" {
   value = module.vcn.vcn_id
 }
 
-output "pubip1_address" {
-  value = oci_core_public_ip.pubip1.ip_address
+output "apachedevpubip_address" {
+  value = oci_core_public_ip.apachedevpubip.ip_address
 }
