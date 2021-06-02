@@ -18,7 +18,7 @@ resource "oci_core_instance" "compute_instance" {
     # Optional
     display_name = var.compute_display_name
     create_vnic_details {
-        assign_public_ip = true
+        assign_public_ip = false
         subnet_id = oci_core_subnet.vcn-private-subnet.id
     }
     metadata = {
@@ -26,4 +26,16 @@ resource "oci_core_instance" "compute_instance" {
     } 
     preserve_boot_volume = false
 
+}
+
+data "oci_core_private_ips" "compute_public_ip" {
+  ip_address = oci_core_instance.compute_instance.private_ip
+  subnet_id  = oci_core_subnet.vcn-public-subnet.id
+}
+
+resource "oci_core_public_ip" "public-ip-1" {
+  compartment_id = var.compartment_id
+  display_name   = "Reserved Public IP"
+  lifetime       = "RESERVED"
+  private_ip_id  = data.oci_core_private_ips.compute_public_ip.private_ips[0]["id"]
 }
