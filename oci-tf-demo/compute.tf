@@ -28,11 +28,15 @@ resource "oci_core_instance" "compute_instance" {
 
 }
 
-resource "oci_core_public_ip" "pubip1" {
-  compartment_id = var.compartment_id
-  display_name   = "reserved public ip"
-  lifetime       = "RESERVED"
-  private_ip_id  = ""
-  defined_tags   = var.common_tags
-}
  
+data "oci_core_private_ips" "pubiptestIps" {
+ip_address = oci_core_instance.pubiptest.private_ip
+subnet_id  = oci_core_subnet.pub.id
+}
+
+resource "oci_core_public_ip" "pubip1" {
+compartment_id = var.compartment_ocid
+display_name   = "reserved public ip"
+lifetime       = "RESERVED"
+private_ip_id  = data.oci_core_private_ips.pubiptestIps.private_ips[0]["id"]
+}
